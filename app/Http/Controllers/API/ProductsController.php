@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreUpdateProductsFormRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -34,7 +35,7 @@ class ProductsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreUpdateProductsFormRequest $request)
     {
         $product = $this->product->create($request->all());
         return response()->json($product, 200);
@@ -65,7 +66,7 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreUpdateProductsFormRequest $request, $id)
     {
         $product = $this->product->find($id);
         $product->update($request->all());
