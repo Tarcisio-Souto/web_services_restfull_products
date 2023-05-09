@@ -25,7 +25,7 @@ class ProductsController extends Controller
      */
     public function index(Request $req)
     {
-        $products = $this->product->listProducts($req->name);
+        $products = $this->product->listProducts($req->all());
         return response()->json($products, 200);        
     }
 

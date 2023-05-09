@@ -16,13 +16,31 @@ class Product extends Model
         'image'
     ];
 
-    public static function listProducts($name = null){
 
-        if (!$name) {
-            return DB::table('products')->get();
-        } 
-        
-        return DB::table('products')->where('name', 'LIKE', "%{$name}")->get();        
+    public function listProducts($data){
+
+        $totalPage = 10;
+
+        if (!isset($data['filter']) && !isset($data['name']) && !isset($data['description']))
+            return $this->paginate($totalPage);
+
+        return $this->where(function ($query) use ($data){
+            if (isset($data['filter'])) {
+                $filter = $data['filter'];
+                $query->where('name', $filter);
+                $query->orWhere('description', 'LIKE', "%{$filter}%");
+            }
+
+            if (isset($data['name']))
+                $query->where('name', $data['name']);
+
+            if (isset($data['description'])) {
+                $description = $data['description'];
+                $query->where('description', 'LIKE', "%{$description}%");
+            }
+
+        })//->paginate($totalPage);
+        ->toSql();
     }
 
 
