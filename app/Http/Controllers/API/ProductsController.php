@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUpdateProductsFormRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ProductsController extends Controller
 {
@@ -37,8 +38,36 @@ class ProductsController extends Controller
      */
     public function store(StoreUpdateProductsFormRequest $request)
     {
-        $product = $this->product->create($request->all());
-        return response()->json($product, 200);
+
+        
+        dd($request->file('image'));
+
+        //$data = $request->all();
+
+        //if ($request->hasFile('image') && $request->file('image')->isValid()) {
+
+           
+
+            //$name = Str::kebab($request->name);
+
+            
+
+            //$extension = $request->image->extension();
+            
+            //$nameFile = "{$name}.{$extension}";
+            //$data['image'] = $nameFile;
+
+            
+
+            //$upload = $request->image->storageAs('products', $nameFile);
+
+            //if (!$upload)
+            //    return response()->json(['error' => 'Fail_Upload'], 500);
+        //}
+
+        //$product = $this->product->create($data);
+        //return response()->json($product, 201);
+
     }
 
     /**
@@ -68,9 +97,15 @@ class ProductsController extends Controller
      */
     public function update(StoreUpdateProductsFormRequest $request, $id)
     {
+
         $product = $this->product->find($id);
+
+        if (!$product) {
+            return response()->json(['error' => 'Produto não encontrado.', 404]);
+        }
+
         $product->update($request->all());
-        return response()->json($product, 200);        
+        return response()->json([$product, 'success' => 'Produto alterada com sucesso', 200]);        
 
     }
 

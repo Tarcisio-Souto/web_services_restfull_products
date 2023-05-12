@@ -24,7 +24,10 @@ class StoreUpdateProductsFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|min:3|max:255'
+            'name' => 'required|min:3|max:255',
+            'description' => 'max:1000',
+            'image' => 'image',
+            'fk_category' => 'required|exists:categories,id'
         ];
     }
 }
