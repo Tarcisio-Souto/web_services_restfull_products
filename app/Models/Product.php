@@ -13,6 +13,7 @@ class Product extends Model
     protected $fillable = [
         'name',
         'description',
+        'fk_category',
         'image'
     ];
 
@@ -39,8 +40,8 @@ class Product extends Model
                 $query->where('description', 'LIKE', "%{$description}%");
             }
 
-        })//->paginate($totalPage);
-        ->toSql();
+        })->paginate($totalPage);
+        //->toSql();
     }
 
 
