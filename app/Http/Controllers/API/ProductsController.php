@@ -40,33 +40,27 @@ class ProductsController extends Controller
     {
 
         
-        dd($request->file('image'));
+        //dd($request->all());
 
-        //$data = $request->all();
+        $data = $request->all();
 
-        //if ($request->hasFile('image') && $request->file('image')->isValid()) {
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
 
-           
+            $name = Str::kebab($request->name);
 
-            //$name = Str::kebab($request->name);
-
+            $extension = $request->image->extension();
             
+            $nameFile = "{$name}.{$extension}";
+            $data['image'] = $nameFile;
 
-            //$extension = $request->image->extension();
-            
-            //$nameFile = "{$name}.{$extension}";
-            //$data['image'] = $nameFile;
+            $upload = $request->image->storeAs('products', $nameFile);
 
-            
+            if (!$upload)
+                return response()->json(['error' => 'Fail_Upload'], 500);
+        }
 
-            //$upload = $request->image->storageAs('products', $nameFile);
-
-            //if (!$upload)
-            //    return response()->json(['error' => 'Fail_Upload'], 500);
-        //}
-
-        //$product = $this->product->create($data);
-        //return response()->json($product, 201);
+        $product = $this->product->create($data);
+        return response()->json($product, 201);
 
     }
 
