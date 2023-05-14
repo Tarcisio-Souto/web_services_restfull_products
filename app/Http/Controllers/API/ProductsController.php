@@ -150,6 +150,8 @@ class ProductsController extends Controller
     {
         $product = $this->product->find($id);
     
+        // --
+
         if (!$product) {
             return response()->json(['error' => 'Nenhum produto encontrado!', 404]);
         }
