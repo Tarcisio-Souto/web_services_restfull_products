@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUpdateProductsFormRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ProductsController extends Controller
 {
 
     private $product;
+    private $path = 'products';
 
     public function __construct(Product $product)
     {
@@ -39,9 +41,6 @@ class ProductsController extends Controller
     public function store(StoreUpdateProductsFormRequest $request)
     {
 
-        
-        //dd($request->all());
-
         $data = $request->all();
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
@@ -53,7 +52,7 @@ class ProductsController extends Controller
             $nameFile = "{$name}.{$extension}";
             $data['image'] = $nameFile;
 
-            $upload = $request->image->storeAs('products', $nameFile);
+            $upload = $request->image->storeAs($this->path, $nameFile);
 
             if (!$upload)
                 return response()->json(['error' => 'Fail_Upload'], 500);
@@ -73,7 +72,7 @@ class ProductsController extends Controller
     public function show($id)
     {
         $product = $this->product->find($id);
-    
+        
         if (!$product) {
             return response()->json(['error' => 'Nenhum produto encontrado!', 404]);
         }
@@ -92,13 +91,51 @@ class ProductsController extends Controller
     public function update(StoreUpdateProductsFormRequest $request, $id)
     {
 
+        $data = $request->all();
         $product = $this->product->find($id);
 
         if (!$product) {
             return response()->json(['error' => 'Produto não encontrado.', 404]);
         }
 
-        $product->update($request->all());
+        if ($product->image) {
+
+            if ($request->image) {
+                if (Storage::exists("{$this->path}/{$product->image}"))
+                    Storage::delete("{$this->path}/{$product->image}");
+            }
+
+            if (!$request->image) {
+
+                $old_extension = explode(".", $product->image)[1];
+                $new_name_img = Str::kebab($request->name);
+                $old_name_img = $product->image;            
+                
+                $nameFile = "{$new_name_img}.{$old_extension}";
+                $data['image'] = $nameFile;
+
+                Storage::move("{$this->path}/{$old_name_img}", "{$this->path}/{$nameFile}");
+
+            }
+            
+        }
+
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+
+            $name = Str::kebab($request->name);
+
+            $extension = $request->image->extension();
+            
+            $nameFile = "{$name}.{$extension}";
+            $data['image'] = $nameFile;
+
+            $upload = $request->image->storeAs($this->path, $nameFile);
+
+            if (!$upload)
+                return response()->json(['error' => 'Fail_Upload'], 500);
+        }
+
+        $product->update($data);
         return response()->json([$product, 'success' => 'Produto alterada com sucesso', 200]);        
 
     }
