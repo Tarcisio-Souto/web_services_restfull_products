@@ -21,4 +21,12 @@ class Category extends Model
         return DB::table('categories')->where('name', 'LIKE', "%{$name}%")->get();
     }
 
+    public function products() {
+
+        return $this->hasMany(Product::class);
+
+    }
+
+
+
 }

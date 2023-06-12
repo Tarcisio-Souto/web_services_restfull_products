@@ -86,11 +86,32 @@ class CategoriesController extends Controller
         $category = $this->category->find($id);
 
         if (!$category) {
-            return response()->json(['error' => 'Categoria não encontrada', 404]);
+            return response()->json(['error' => 'Categoria não encontrada meu', 404]);
         }
 
         $category->delete($id);
         return response()->json(['success' => true, 200]);
 
     }
+
+
+
+    public function products($id) {
+
+        $category = $this->category->find($id);
+
+        if (!$category) {
+            return response()->json(['error' => 'Categoria não encontrada meu', 404]);
+        }
+
+        $products = $category->products()->get();
+
+        return response()->json([
+            'category' => $category,
+            'products' => $products
+        ]);
+
+    }
+
+
 }

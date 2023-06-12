@@ -150,8 +150,15 @@ class ProductsController extends Controller
     {
         $product = $this->product->find($id);
     
+        // --
+
         if (!$product) {
             return response()->json(['error' => 'Nenhum produto encontrado!', 404]);
+        }
+
+        if ($product->image) {
+            if (Storage::exists("{$this->path}/{$product->image}"))
+                Storage::delete("{$this->path}/{$product->image}");
         }
 
         $product->delete();
