@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUpdateProductsFormRequest;
@@ -71,7 +71,7 @@ class ProductsController extends Controller
      */
     public function show($id)
     {
-        $product = $this->product->find($id);
+        $product = $this->product->with('category')->find($id);
         
         if (!$product) {
             return response()->json(['error' => 'Nenhum produto encontrado!', 404]);
