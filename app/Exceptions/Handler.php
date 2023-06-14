@@ -38,4 +38,18 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, Throwable $e)
+    {
+        //dd($e);
+        
+        if ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            return response()->json(['error' => 'Pagina nao encontrada =/', 404]);
+        }
+
+
+    }
+
+
+
 }
