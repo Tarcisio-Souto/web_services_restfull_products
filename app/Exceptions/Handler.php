@@ -38,4 +38,25 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, Throwable $e)
+    {
+        //dd($e);
+
+        if ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            if ($request->expectsJson())
+                return response()->json(['error' => 'Pagina nao encontrada.', $e->getStatusCode()]);
+        }
+
+        if ($e instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) {
+            if ($request->expectsJson())
+                return response()->json(['error' => 'Esta rota nao suporta este metodo.', $e->getStatusCode()]);
+        }
+
+        return parent::render($request, $e);
+
+    }
+
+
+
 }
